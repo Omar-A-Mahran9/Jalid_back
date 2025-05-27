@@ -84,7 +84,7 @@ public function getTime(Request $request)
         ->where('day_date', $request->day_date)->first();
 
     if (!$bookingDate) {
-        return response()->json(['time_slots' => []]); // No time slots for this date & addon
+        return $this->success('',[]);
     }
 
 return $this->success('',[
