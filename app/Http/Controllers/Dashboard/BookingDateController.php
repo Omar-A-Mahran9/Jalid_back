@@ -27,7 +27,7 @@ public function index(Request $request)
 public function store(Request $request)
 {
     $validated = $request->validate([
-        'day_date' => 'required|date',
+        'day_date' => 'required|date|after_or_equal:today',
         'time_slots' => 'required|array|min:1',
         'time_slots.*.time' => 'required|date_format:H:i',
     ]);
@@ -71,9 +71,8 @@ public function store(Request $request)
 
 public function update(Request $request, BookingDate $bookingDate)
 {
-    dd($request);
-    $validated = $request->validate([
-        'day_date' => 'required|date',
+     $validated = $request->validate([
+        'day_date' => 'required|date|after_or_equal:today',
          'time_slots' => 'required|array|min:1',
         'time_slots.*.time' => 'required|date_format:H:i',
     ]);

@@ -39,7 +39,6 @@ let translations = {
         "Edit awards !": "تعديل انجاز !",
         "Edit Booking Date": "تعديل موعد متاح",
         Remove: "مسح",
-        "Add new date": "إضافة موعد جديد",
 
         "Error !": "خطـأ !",
         "Operation done successfully": "تمت العملية بنجاح",
