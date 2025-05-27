@@ -78,13 +78,10 @@ public function getTime(Request $request)
 {
     $request->validate([
         'day_date' => 'required|date',
-        'addon_service_id' => 'required|exists:addon_services,id',
     ]);
 
     $bookingDate = BookingDate::with('timeSlots')
-        ->where('day_date', $request->day_date)
-        ->where('addon_service_id', $request->addon_service_id)
-        ->first();
+        ->where('day_date', $request->day_date)->first();
 
     if (!$bookingDate) {
         return response()->json(['time_slots' => []]); // No time slots for this date & addon
