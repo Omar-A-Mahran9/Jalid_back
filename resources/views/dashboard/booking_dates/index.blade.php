@@ -94,7 +94,6 @@
                                      data-kt-check-target="#kt_datatable .form-check-input" value="1" />
                              </div>
                          </th>
-                         <th>{{ __('Service') }}</th>
                          <th>{{ __('Date') }}</th>
                          <th>{{ __('Created at') }}</th>
                          <th class=" min-w-100px">{{ __('Actions') }}</th>
@@ -124,18 +123,7 @@
                      </div>
 
                      <div class="modal-body">
-                         <div class="mb-3">
-                             <label for="addon_service_id_inp" class="form-label required">{{ __('Service') }}</label>
 
-                             <select class="form-select form-select-solid" data-dir="{{ getDirection() }}"
-                                 name="addon_service_id" id="addon_service_id_inp" data-control="select2"
-                                 data-placeholder="{{ __('Select service') }}" data-allow-clear="true">
-                                 @foreach ($addonServices as $addon_service)
-                                     <option value="{{ $addon_service->id }}"> {{ $addon_service->name }} </option>
-                                 @endforeach
-                             </select>
-                             <div class="invalid-feedback d-block" id="addon_service_id"></div>
-                         </div>
 
                          <div class="mb-3">
                              <label for="day_date_inp" class="form-label">{{ __('Date') }}</label>

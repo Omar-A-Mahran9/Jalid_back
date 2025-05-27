@@ -23,7 +23,6 @@ var KTDatatablesServerSide = (function () {
             },
             columns: [
                 { data: "id" },
-                { data: "addon_service.name" },
                 { data: "day_date" },
                 { data: "created_at" },
                 { data: null },
@@ -40,7 +39,7 @@ var KTDatatablesServerSide = (function () {
                     },
                 },
                 {
-                    targets: 2,
+                    targets: 1,
                     render: function (data, type, row) {
                         return `
                             <div>
@@ -55,7 +54,7 @@ var KTDatatablesServerSide = (function () {
                 },
 
                 {
-                    targets: 3,
+                    targets: 2,
                     render: function (data, type, row) {
                         return `
                             <div>
@@ -127,7 +126,6 @@ var KTDatatablesServerSide = (function () {
     };
 
     var handleEditRows = () => {
-        // Select all edit buttons
         const editButtons = document.querySelectorAll(
             '[data-kt-docs-table-filter="edit_row"]'
         );
@@ -142,62 +140,77 @@ var KTDatatablesServerSide = (function () {
                 // Set modal title
                 $("#form_title").text(__("Edit Booking Date"));
 
-                // Set addon service select (assuming data.addon_service_id exists)
+                // Set select value
                 $("#addon_service_id_inp")
                     .val(data.addon_service_id)
                     .trigger("change");
 
-                // Set date
+                // Set date value
                 $("#day_date_inp").val(data.day_date);
 
-                // Clear any existing repeater time slots
-                let $list = $(
+                // Get repeater list container
+                let $repeaterList = $(
                     "#form_repeater [data-repeater-list='time_slots']"
                 );
-                $list.empty();
 
-                // Populate repeater with existing time slots
+                // Clear previous items
+                $repeaterList.empty();
+
+                // Add time slots
                 if (data.time_slots && data.time_slots.length) {
                     data.time_slots.forEach((slot) => {
-                        let item = $(`
+                        let repeaterItem = $(`
                         <div data-repeater-item class="d-flex mb-2 align-items-center">
                             <input type="time" name="time" class="form-control me-2" value="${
                                 slot.time
                             }" />
-                            <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
-                                ${__("Remove")}
-                            </button>
+                            <button type="button" data-repeater-delete class="btn btn-sm btn-danger">${__(
+                                "Remove"
+                            )}</button>
                         </div>
                     `);
-                        $list.append(item);
+                        $repeaterList.append(repeaterItem);
                     });
                 } else {
-                    // If no time slots, add one empty slot
-                    $list.append(`
+                    // Add one empty slot
+                    $repeaterList.append(`
                     <div data-repeater-item class="d-flex mb-2 align-items-center">
                         <input type="time" name="time" class="form-control me-2" />
-                        <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
-                            ${__("Remove")}
-                        </button>
+                        <button type="button" data-repeater-delete class="btn btn-sm btn-danger">${__(
+                            "Remove"
+                        )}</button>
                     </div>
                 `);
                 }
 
-                // Update form action and method for update
-                $("#crud_form").attr(
-                    "action",
-                    `/dashboard/booking_dates/${data.id}`
-                );
+                // Important: re-init repeater so delete buttons work
+                $repeaterList
+                    .closest("[data-repeater-list]")
+                    .parents("#form_repeater")
+                    .repeater({
+                        initEmpty: false,
+                        defaultValues: {
+                            time: "",
+                        },
+                        show: function () {
+                            $(this).slideDown();
+                        },
+                        hide: function (deleteElement) {
+                            $(this).slideUp(deleteElement);
+                        },
+                    });
 
-                // Remove any previous _method hidden inputs to avoid duplicates
-                $("#crud_form input[name='_method']").remove();
+                // Set form action and method
+                $("#crud_form")
+                    .attr("action", `/dashboard/booking_dates/${data.id}`)
+                    .find("input[name='_method']")
+                    .remove();
 
-                // Add hidden input for PUT method
                 $("#crud_form").prepend(
                     `<input type="hidden" name="_method" value="PUT">`
                 );
 
-                // Show the modal
+                // Show modal
                 $("#crud_modal").modal("show");
             });
         });

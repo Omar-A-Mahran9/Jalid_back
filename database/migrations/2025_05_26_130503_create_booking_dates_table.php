@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('booking_dates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('addon_service_id')->constrained()->onDelete('cascade');
-            $table->date('day_date'); // e.g., 2025-06-01
+             $table->date('day_date'); // e.g., 2025-06-01
 
             $table->timestamps();
         });

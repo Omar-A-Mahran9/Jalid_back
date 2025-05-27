@@ -38,6 +38,7 @@ let translations = {
         "something went wrong": "حدث خطأ ما",
         "Edit awards !": "تعديل انجاز !",
         "Edit Booking Date": "تعديل موعد متاح",
+        Remove: "مسح",
 
         "Error !": "خطـأ !",
         "Operation done successfully": "تمت العملية بنجاح",
