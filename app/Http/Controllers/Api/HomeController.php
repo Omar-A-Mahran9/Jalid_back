@@ -95,6 +95,21 @@ return $this->success('',[
 
 }
 
+public function getAvailableDates(Request $request)
+{
+    $dates = BookingDate::withCount('timeSlots')
+        ->whereDate('day_date', '>=', Carbon::today())
+        ->having('time_slots_count', '>', 0)
+        ->orderBy('day_date')
+        ->pluck('day_date');
+
+    return $this->success('', [
+        'available_dates' => $dates->map(function ($date) {
+            return Carbon::parse($date)->format('Y-m-d');
+        }),
+    ]);
+}
+
     public function getwhyus()
     {
         $Whyus = Whyus::get();
