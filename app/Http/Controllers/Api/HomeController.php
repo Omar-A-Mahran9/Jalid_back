@@ -95,7 +95,7 @@ return $this->success('',[
 
 }
 
-public function getAvailableDates(Request $request)
+public function getAvailableDates()
 {
     $dates = BookingDate::withCount('timeSlots')
         ->whereDate('day_date', '>=', Carbon::today())
