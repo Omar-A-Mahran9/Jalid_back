@@ -87,11 +87,12 @@ public function getTime(Request $request)
         return response()->json(['time_slots' => []]); // No time slots for this date & addon
     }
 
-return response()->json([
+return $this->success([
     'time_slots' => $bookingDate->timeSlots->pluck('time')->map(function ($time) {
-        return Carbon::parse($time)->format('h:i A'); // e.g., 11:16 AM or 12:16 AM
-    })
+        return Carbon::parse($time)->format('h:i A');
+    }),
 ]);
+
 }
 
     public function getwhyus()
