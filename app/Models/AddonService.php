@@ -51,6 +51,10 @@ class AddonService extends Model
                     ->withPivot('count')
                     ->withTimestamps();
     }
+public function bookingDates()
+{
+    return $this->hasMany(BookingDate::class);
+}
 
 
 }

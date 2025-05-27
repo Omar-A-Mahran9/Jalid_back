@@ -1,13 +1,15 @@
-$('#form_repeater').repeater({
-    initEmpty: false,
-    isFirstItemUndeletable: true,
-    show: function () {
-        $(this).slideDown();
-        $(this).find('input').prop('readonly',false);
-        $(this).find('.status-order').html( $('.status-order').length + ' - ' + __("Name in arabic") )
-    },
+$(document).ready(function () {
+    $("#form_repeater").repeater({
+        initEmpty: false,
+        isFirstItemUndeletable: true,
 
-    hide: function (deleteElement) {
-        $(this).slideUp(deleteElement);
-    }
+        show: function () {
+            $(this).slideDown();
+            $(this).find("input").prop("readonly", false);
+        },
+
+        hide: function (deleteElement) {
+            $(this).slideUp(deleteElement);
+        },
+    });
 });

@@ -75,6 +75,8 @@ Route::resource('packages', 'PackagesController')->except(['create', 'edit']);
 Route::resource('car_prices', 'CarPriceController')->except(['create', 'edit']);
 
 Route::resource('cities', 'CityController')->except(['create', 'edit']);
+Route::resource('booking_dates', 'BookingDateController')->except(['create', 'edit']);
+
 Route::resource('categories', 'CategoryController')->except(['create', 'edit']);
 Route::resource('maincategories', 'MainCategoryController')->except(['create', 'edit']);
 

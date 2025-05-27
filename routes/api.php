@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => ['cors', 'json.response']], function () {
 
+
     Route::get('about_us', 'HomeController@getAboutUs');
     Route::get('privacy_policy', 'HomeController@getprivacypolicy');
 
@@ -35,6 +36,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::get('how-make-order', 'HomeController@getMakeOrder');
     Route::get('cities', 'HomeController@getcities');
     Route::get('rates', 'HomeController@getrates');
+    Route::post('get-time-slots', 'HomeController@getTime');
 
  // Step 1 - 4: Progressive validation (you may store values in session/temp)
 Route::post('/step/{step}', [OrderController::class, 'handleStep']);

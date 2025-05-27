@@ -13,6 +13,7 @@ use App\Http\Resources\Api\SliderResource;
 use App\Http\Resources\Api\WhyusResource;
 
 use App\Models\AddonService;
+use App\Models\BookingDate;
 use App\Models\City;
 use App\Models\CommonQuestion;
 use App\Models\CustomerRate;
@@ -22,10 +23,13 @@ use App\Models\NewsLetter;
 use App\Models\Slider;
 
 use App\Models\Whyus;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+
+
 
 
 
@@ -70,7 +74,28 @@ public function getServices()
     ]);
 }
 
+public function getTime(Request $request)
+{
+    $request->validate([
+        'day_date' => 'required|date',
+        'addon_service_id' => 'required|exists:addon_services,id',
+    ]);
 
+    $bookingDate = BookingDate::with('timeSlots')
+        ->where('day_date', $request->day_date)
+        ->where('addon_service_id', $request->addon_service_id)
+        ->first();
+
+    if (!$bookingDate) {
+        return response()->json(['time_slots' => []]); // No time slots for this date & addon
+    }
+
+return response()->json([
+    'time_slots' => $bookingDate->timeSlots->pluck('time')->map(function ($time) {
+        return Carbon::parse($time)->format('h:i A'); // e.g., 11:16 AM or 12:16 AM
+    })
+]);
+}
 
     public function getwhyus()
     {

@@ -33,6 +33,8 @@ class Role extends Model
 
         'customers',
 
+        'booking_dates',
+
         'customersRate',
 
          'roles',

@@ -31,11 +31,13 @@ let translations = {
         "Edit addon": "تعديل الخدمة",
         "Add new rate": "اضافة تقييم",
         "Add new awars": "اضافة انجاز جديد",
+        "Add new date": "إضافة موعد جديد",
 
         "Yes, Delete !": "نعــم, أحذف !",
         "No, Cancel": "لا , ألغي",
         "something went wrong": "حدث خطأ ما",
         "Edit awards !": "تعديل انجاز !",
+        "Edit Booking Date": "تعديل موعد متاح",
 
         "Error !": "خطـأ !",
         "Operation done successfully": "تمت العملية بنجاح",

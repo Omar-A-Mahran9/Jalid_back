@@ -16,7 +16,7 @@
             data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
             <!--begin::Card title-->
             <div class="card-title m-0">
-                <h3 class="fw-bold m-0">{{ __('Cities list') }}</h3>
+                <h3 class="fw-bold m-0">{{ __('Date list') }}</h3>
             </div>
             <!--end::Card title-->
 
@@ -39,7 +39,7 @@
                                     fill="currentColor"></rect>
                             </svg>
                         </span>
-                        <!--end::Svg Icon-->{{ __('Add city') }}
+                        <!--end::Svg Icon-->{{ __('Add Date') }}
                     </button>
                     <!--end::Add customer-->
                 </div>
@@ -68,7 +68,7 @@
                     </span>
                     <!--end::Svg Icon-->
                     <input type="text" data-kt-docs-table-filter="search"
-                        class="form-control form-control-solid w-250px ps-15" placeholder="{{ __('Search for cities') }}">
+                        class="form-control form-control-solid w-250px ps-15" placeholder="{{ __('Search for dates') }}">
                 </div>
                 <!--end::Search-->
 
@@ -116,7 +116,7 @@
             <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="form_title">{{ __('Add new city') }}</h5>
+                        <h5 class="modal-title" id="form_title">{{ __('Add new date') }}</h5>
                         <!--begin::Close-->
                         <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
                             aria-label="Close">
@@ -172,7 +172,7 @@
             $("#add_btn").click(function(e) {
                 e.preventDefault();
 
-                $("#form_title").text(__('Add new city'));
+                $("#form_title").text(__('Add new date'));
                 $("[name='_method']").remove();
                 $("#crud_form").trigger('reset');
                 $("#crud_form").attr('action', `/dashboard/cities`);

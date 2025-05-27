@@ -64,7 +64,11 @@
                         <i class="ki-outline ki-plus fs-2"></i>
                     </x-dashboard.aside-item>
                 @endcan
-
+         @can('view_booking_dates')
+                    <x-dashboard.aside-item :slug="'booking_dates'" :route="route('dashboard.booking_dates.index')" :title="__('Booking Dates')">
+                        <i class="ki-outline ki-time fs-2"></i>
+                    </x-dashboard.aside-item>
+                @endcan
                 {{-- @can('view_whyus')
                     <x-dashboard.aside-item :slug="'whyus'" :route="route('dashboard.whyus.index')" :title="__('Why us')">
                         <i class="ki-outline ki-abstract-29 fs-2"></i>

@@ -223,6 +223,8 @@ return [
 
 
     'attributes' => [
+                'day_date' => 'التاريخ',
+
         'first_name' => 'الاسم الأول',
         'last_name' => 'اسم العائلة',
         'message' => 'الرسالة',
