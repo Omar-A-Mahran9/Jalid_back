@@ -89,11 +89,13 @@ public function getTime(Request $request)
     //         'time_slots' => [],
     //     ]);
     // }
-    $timeSlots = $bookingDate->timeSlots->mapWithKeys(function ($slot) {
-        $time = $slot->time;
-        $formatted = Carbon::createFromFormat('H:i:s', $time)->format('h:i A');
-        return [$time => $formatted];
-    });
+   $timeSlots = $bookingDate->timeSlots->mapWithKeys(function ($slot) {
+    $time = $slot->time; // e.g. 07:00:00
+    $key = Carbon::createFromFormat('H:i:s', $time)->format('H:i'); // 24h format, without seconds: 07:00
+    $formatted = Carbon::createFromFormat('H:i:s', $time)->format('h:i A'); // 12h format: 07:00 AM
+    return [$key => $formatted];
+});
+
 
     return $this->success('', [
         'time_slots' => $timeSlots,
