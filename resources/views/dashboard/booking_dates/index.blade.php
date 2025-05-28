@@ -18,7 +18,6 @@
              <div class="card-title m-0">
                  <h3 class="fw-bold m-0">{{ __('Date list') }}</h3>
              </div>
-             @dd($schedules);
          </div>
          <!--begin::Card header-->
          <!--begin::Content-->
@@ -101,12 +100,15 @@
                              {{-- Availability Checkbox with hidden fallback --}}
                              <input type="hidden" name="schedules[{{ $day }}][is_available]" value="0" />
                              <div class="form-check mb-3">
+
                                  <input class="form-check-input" type="checkbox"
                                      name="schedules[{{ $day }}][is_available]" value="1"
                                      id="{{ $day }}Check" {{ $daySchedule['is_available'] ? 'checked' : '' }}>
+
                                  <label class="form-check-label" for="{{ $day }}Check">
                                      {{ __('Available') }}
                                  </label>
+
                              </div>
 
                              {{-- Time Slots Repeater --}}
@@ -128,6 +130,7 @@
                                      </div>
                                  @endforelse
                              </div>
+
 
                              <button type="button" data-repeater-create class="btn btn-sm btn-light-primary mt-2">
                                  + {{ __('Add Time Slot') }}
