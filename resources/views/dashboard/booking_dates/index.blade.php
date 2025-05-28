@@ -143,7 +143,7 @@
 
          <div class="mt-4">
              <button type="submit" class="btn btn-primary">
-                 <span class="indicator-label">{{ __('Save Schedule') }}</span>
+                 <span class="indicator-label">{{ __('Save') }}</span>
                  <span class="indicator-progress" style="display:none;">
                      {{ __('Please wait...') }}
                      <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
