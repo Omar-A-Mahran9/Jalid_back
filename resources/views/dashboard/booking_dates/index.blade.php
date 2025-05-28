@@ -84,7 +84,7 @@
          data-success-callback="onAjaxSuccess" data-error-callback="onAjaxError">
          @csrf
 
-         <div class="row justify-content-center align-items-center">
+         <div class="row justify-content-center align-items-start">
              @foreach (['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
                  @php
                      $daySchedule = $schedules[$day] ?? ['is_available' => false, 'times' => []];
