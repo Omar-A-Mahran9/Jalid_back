@@ -105,17 +105,17 @@ public function getTime(Request $request)
 public function getAvailableDates()
 {
     $dates = BookingDate::withCount('timeSlots')
+        ->where('is_available', 1)               // <-- add this condition
         ->whereDate('day_date', '>=', Carbon::today())
         ->having('time_slots_count', '>', 0)
         ->orderBy('day_date')
         ->pluck('day_date');
 
     return $this->success('', [
-        'available_dates' => $dates->map(function ($date) {
-            return Carbon::parse($date)->format('Y-m-d');
-        }),
+        'available_dates' => $dates->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray(),
     ]);
 }
+
 
     public function getwhyus()
     {
