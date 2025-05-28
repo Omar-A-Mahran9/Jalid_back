@@ -27,69 +27,44 @@ public function index(Request $request)
 
 
 
+
+
 public function store(Request $request)
 {
-    dd($request);
-    // Validate input (you can expand this as needed)
-    $validated = $request->validate([
-        'schedules' => 'required|array',
-        'schedules.*.is_available' => 'required|boolean',
-        'schedules.*.times' => 'array',
-        'schedules.*.times.*.time' => 'required_if:schedules.*.is_available,1|date_format:H:i',
-    ]);
+    $schedules = $request->input('schedules'); // weekly template
+    $startDate = Carbon::now()->startOfDay();
+    $endDate = Carbon::now()->addMonths(2)->endOfDay();
 
-    $schedules = $validated['schedules'];
-
-    $startDate = Carbon::today();
-    $endDate = $startDate->copy()->addMonths(2);
-
-    // Loop through each date in the next 2 months
-    for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
-        $dayName = $date->format('l'); // e.g., Saturday
+    // Loop over each date in the 2-month range
+    for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+        $dayName = $date->format('l'); // e.g., "Monday", "Tuesday"
 
         if (!isset($schedules[$dayName])) {
             continue;
         }
 
-        $daySchedule = $schedules[$dayName];
+        $dayConfig = $schedules[$dayName];
 
-        $isAvailable = (bool) $daySchedule['is_available'];
-        $times = $daySchedule['times'] ?? [];
+        $bookingDate = BookingDate::updateOrCreate(
+            ['day_date' => $date->toDateString()],
+            ['is_available' => (bool) $dayConfig['is_available']]
+        );
 
-        // If marked available but no times, force unavailable
-        if ($isAvailable && count($times) === 0) {
-            $isAvailable = false;
-        }
-
-        // Find existing or create new BookingDate record
-        $bookingDate = BookingDate::firstOrNew(['day_date' => $date->toDateString()]);
-
-        $bookingDate->is_available = $isAvailable;
-        $bookingDate->save();
-
-        // Delete old time slots if any
+        // Delete old slots to prevent duplication
         $bookingDate->timeSlots()->delete();
 
-        // Insert new time slots only if available
-        if ($isAvailable) {
-            $timeSlotsData = [];
-            foreach ($times as $timeItem) {
-                if (!empty($timeItem['time'])) {
-                    $timeSlotsData[] = [
-                        'time' => $timeItem['time'],
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
-                }
-            }
-            if (!empty($timeSlotsData)) {
-                $bookingDate->timeSlots()->createMany($timeSlotsData);
+        // Create time slots
+        foreach ($dayConfig['times'] as $slot) {
+            if (!empty($slot['time'])) {
+                $bookingDate->timeSlots()->create([
+                    'time' => $slot['time']
+                ]);
             }
         }
     }
+ 
+ }
 
-    return redirect()->back()->with('success', 'Schedule saved successfully.');
-}
 
 
 

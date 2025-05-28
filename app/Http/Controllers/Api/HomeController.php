@@ -74,6 +74,10 @@ public function getServices()
     ]);
 }
 
+use Illuminate\Http\Request;
+use App\Models\BookingDate;
+use Carbon\Carbon;
+
 public function getTime(Request $request)
 {
     $request->validate([
@@ -81,14 +85,17 @@ public function getTime(Request $request)
     ]);
 
     $bookingDate = BookingDate::with('timeSlots')
-        ->where('day_date', $request->day_date)->first();
+        ->where('day_date', $request->day_date)
+        ->first();
 
-    if (!$bookingDate) {
-        return $this->success('', []);
+    if (!$bookingDate || !$bookingDate->is_available) {
+        return $this->success('', [
+            'time_slots' => [],
+        ]);
     }
 
     $timeSlots = $bookingDate->timeSlots->pluck('time')->mapWithKeys(function ($time) {
-        $formatted = Carbon::parse($time)->format('h:i A');
+        $formatted = Carbon::createFromFormat('H:i:s', $time)->format('h:i A'); // from DB format
         return [$time => $formatted];
     });
 
@@ -96,6 +103,7 @@ public function getTime(Request $request)
         'time_slots' => $timeSlots,
     ]);
 }
+
 
 
 public function getAvailableDates()

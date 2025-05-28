@@ -108,7 +108,9 @@
      </div>
      <!--end::Basic info-->
 
-     <form id="crud_form" action="{{ route('dashboard.booking_dates.store') }}" method="POST">
+
+     <form id="crud_form" class="ajax-form" action="{{ route('dashboard.booking_dates.store') }}" method="post"
+         data-success-callback="onAjaxSuccess" data-error-callback="onAjaxError">
          @csrf
 
          <div class="row">
@@ -140,14 +142,14 @@
                                  @forelse ($daySchedule['times'] as $timeItem)
                                      <div data-repeater-item class="d-flex mb-3 align-items-center">
                                          <input type="time" name="time" class="form-control me-2"
-                                             value="{{ $timeItem['time'] ?? '' }}"  />
+                                             value="{{ $timeItem['time'] ?? '' }}" />
                                          <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
                                              {{ __('Remove') }}
                                          </button>
                                      </div>
                                  @empty
                                      <div data-repeater-item class="d-flex mb-3 align-items-center">
-                                         <input type="time" name="time" class="form-control me-2"  />
+                                         <input type="time" name="time" class="form-control me-2" />
                                          <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
                                              {{ __('Remove') }}
                                          </button>
