@@ -74,6 +74,7 @@ public function getServices()
     ]);
 }
 
+
 public function getTime(Request $request)
 {
     $request->validate([
@@ -100,7 +101,6 @@ public function getTime(Request $request)
         'time_slots' => $timeSlots,
     ]);
 }
-
 public function getAvailableDates()
 {
     $dates = BookingDate::withCount('timeSlots')
