@@ -90,8 +90,9 @@ public function getTime(Request $request)
         ]);
     }
 
-    $timeSlots = $bookingDate->timeSlots->map(function ($slot) {
-        return ['time' => Carbon::createFromFormat('H:i:s', $slot->time)->format('H:i')];
+    $timeSlots = $bookingDate->timeSlots->pluck('time')->mapWithKeys(function ($time) {
+        $formatted = Carbon::createFromFormat('H:i:s', $time)->format('h:i A'); // from DB format
+        return [$time => $formatted];
     });
 
     return $this->success('', [
