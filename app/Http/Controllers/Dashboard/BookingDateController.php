@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\AddonService;
-use App\Models\BookingDate;
+ use App\Models\BookingDate;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookingDateController extends Controller
 {
@@ -24,48 +25,74 @@ public function index(Request $request)
 
 
 
+
+
 public function store(Request $request)
 {
+    dd($request);
+    // Validate input (you can expand this as needed)
     $validated = $request->validate([
-        'day_date' => 'required|date|after_or_equal:today',
-        'time_slots' => 'required|array|min:1',
-        'time_slots.*.time' => 'required|date_format:H:i',
+        'schedules' => 'required|array',
+        'schedules.*.is_available' => 'required|boolean',
+        'schedules.*.times' => 'array',
+        'schedules.*.times.*.time' => 'required_if:schedules.*.is_available,1|date_format:H:i',
     ]);
-    $exists = BookingDate::where('day_date', $validated['day_date'])->exists();
 
-    if ($exists) {
-        return response()->json([
-            'errors' => [
-                'day_date' => [__('Duplicate date for selected Date.')],
-            ]
-        ], 422);
-    }
-     try {
-        // Step 1: Create booking date
-        $bookingDate = BookingDate::create([
-            'day_date' => $validated['day_date'],
+    $schedules = $validated['schedules'];
 
-        ]);
+    $startDate = Carbon::today();
+    $endDate = $startDate->copy()->addMonths(2);
 
-        // Step 2: Save time slots
-        foreach ($validated['time_slots'] as $slot) {
-            $bookingDate->timeSlots()->create([
-                'time' => $slot['time'],
-            ]);
+    // Loop through each date in the next 2 months
+    for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+        $dayName = $date->format('l'); // e.g., Saturday
+
+        if (!isset($schedules[$dayName])) {
+            continue;
         }
 
+        $daySchedule = $schedules[$dayName];
 
-        // Return JSON success for AJAX
-        return response()->json(['message' => 'Booking date and time slots saved successfully.']);
+        $isAvailable = (bool) $daySchedule['is_available'];
+        $times = $daySchedule['times'] ?? [];
 
-    } catch (\Exception $e) {
+        // If marked available but no times, force unavailable
+        if ($isAvailable && count($times) === 0) {
+            $isAvailable = false;
+        }
 
-        return response()->json([
-            'message' => 'Failed to save booking data.',
-            'error' => $e->getMessage()
-        ], 500);
+        // Find existing or create new BookingDate record
+        $bookingDate = BookingDate::firstOrNew(['day_date' => $date->toDateString()]);
+
+        $bookingDate->is_available = $isAvailable;
+        $bookingDate->save();
+
+        // Delete old time slots if any
+        $bookingDate->timeSlots()->delete();
+
+        // Insert new time slots only if available
+        if ($isAvailable) {
+            $timeSlotsData = [];
+            foreach ($times as $timeItem) {
+                if (!empty($timeItem['time'])) {
+                    $timeSlotsData[] = [
+                        'time' => $timeItem['time'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+            if (!empty($timeSlotsData)) {
+                $bookingDate->timeSlots()->createMany($timeSlotsData);
+            }
+        }
     }
+
+    return redirect()->back()->with('success', 'Schedule saved successfully.');
 }
+
+
+
 
 
 

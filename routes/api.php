@@ -37,7 +37,6 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::get('cities', 'HomeController@getcities');
     Route::get('rates', 'HomeController@getrates');
     Route::post('get-time-slots', 'HomeController@getTime');
-    Route::get('get_available_date', 'HomeController@getAvailableDates');
 
  // Step 1 - 4: Progressive validation (you may store values in session/temp)
 Route::post('/step/{step}', [OrderController::class, 'handleStep']);
@@ -51,6 +50,7 @@ Route::post('/confirm', [OrderController::class, 'confirmOrderOtp']);
 
     Route::get('general', 'GeneralInvokableController');
     Route::post('contact_us', 'ContactUsController@store');
+    Route::get('get_available_date', 'HomeController@getAvailableDates');
 
 
 });

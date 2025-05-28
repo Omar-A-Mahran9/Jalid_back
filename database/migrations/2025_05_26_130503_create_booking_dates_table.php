@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('booking_dates', function (Blueprint $table) {
             $table->id();
              $table->date('day_date'); // e.g., 2025-06-01
+             $table->boolean('is_available')->default(false); // NEW COLUMN
 
             $table->timestamps();
         });

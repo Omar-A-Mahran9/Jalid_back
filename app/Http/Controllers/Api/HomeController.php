@@ -84,16 +84,19 @@ public function getTime(Request $request)
         ->where('day_date', $request->day_date)->first();
 
     if (!$bookingDate) {
-        return $this->success('',[]);
+        return $this->success('', []);
     }
 
-return $this->success('',[
-    'time_slots' => $bookingDate->timeSlots->pluck('time')->map(function ($time) {
-        return Carbon::parse($time)->format('h:i A');
-    }),
-]);
+    $timeSlots = $bookingDate->timeSlots->pluck('time')->mapWithKeys(function ($time) {
+        $formatted = Carbon::parse($time)->format('h:i A');
+        return [$time => $formatted];
+    });
 
+    return $this->success('', [
+        'time_slots' => $timeSlots,
+    ]);
 }
+
 
 public function getAvailableDates()
 {

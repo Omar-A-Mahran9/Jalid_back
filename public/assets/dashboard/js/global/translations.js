@@ -6,6 +6,8 @@ const __ = (word) => {
 
 let translations = {
     ar: {
+        Available: "تفعيل",
+
         "Add new why us": "اضافة لماذا نحن",
         Add: "إضافة",
         "Choose the type": "اختر النوع",
@@ -32,7 +34,8 @@ let translations = {
         "Add new rate": "اضافة تقييم",
         "Add new awars": "اضافة انجاز جديد",
         "Add new date": "إضافة موعد جديد",
-
+        "Are you sure you want to delete this time slot?":
+            "هل أنت متاكد من أنك تريد مسح الوقت ؟",
         "Yes, Delete !": "نعــم, أحذف !",
         "No, Cancel": "لا , ألغي",
         "something went wrong": "حدث خطأ ما",
@@ -113,6 +116,13 @@ let translations = {
         wednesday: "الأربعاء",
         thursday: "الخميس",
         friday: "الجمعة",
+        Saturday: "السبت",
+        Sunday: "الأحد",
+        Monday: "الإثنين",
+        Tuesday: "الثلاثاء",
+        Wednesday: "الأربعاء",
+        Thursday: "الخميس",
+        Friday: "الجمعة",
         row: "صفوف ",
         rows: "صفوف ",
         " selected": "محددة",

@@ -19,7 +19,7 @@
                  <h3 class="fw-bold m-0">{{ __('Date list') }}</h3>
              </div>
              <!--end::Card title-->
-
+             {{--
              <div class="d-flex justify-content-center flex-wrap mb-5 mt-5">
 
                  <!--begin::Toolbar-->
@@ -45,14 +45,14 @@
                  </div>
                  <!--end::Toolbar-->
              </div>
-             <!--end::Info-->
+             <!--end::Info--> --}}
 
          </div>
          <!--begin::Card header-->
          <!--begin::Content-->
          <div class="card-body">
              <!--begin::Wrapper-->
-             <div class="d-flex flex-stack flex-wrap mb-5">
+             {{-- <div class="d-flex flex-stack flex-wrap mb-5">
                  <!--begin::Search-->
                  <div class="d-flex align-items-center position-relative my-1 mb-2 mb-md-0">
                      <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
@@ -81,10 +81,10 @@
                          data-kt-docs-table-select="delete_selected">{{ __('delete') }}</button>
                  </div>
                  <!--end::Group actions-->
-             </div>
+             </div> --}}
              <!--end::Wrapper-->
 
-             <!--begin::Datatable-->
+             {{-- <!--begin::Datatable-->
              <table id="kt_datatable" class="table align-middle text-center table-row-dashed fs-6 gy-5">
                  <thead>
                      <tr class=" text-gray-400 fw-bold fs-7 text-uppercase gs-0">
@@ -101,75 +101,77 @@
                  </thead>
                  <tbody class="text-gray-600 fw-semibold">
                  </tbody>
-             </table>
+             </table> --}}
              <!--end::Datatable-->
          </div>
          <!--end::Content-->
      </div>
      <!--end::Basic info-->
 
-     <form id="crud_form" class="ajax-form" action="{{ route('dashboard.booking_dates.store') }}" method="post"
-         data-success-callback="onAjaxSuccess" data-error-callback="onAjaxError">
+     <form id="crud_form" action="{{ route('dashboard.booking_dates.store') }}" method="POST">
          @csrf
-         <div class="modal fade" tabindex="-1" id="crud_modal">
-             <div class="modal-dialog modal-dialog-scrollable">
-                 <div class="modal-content">
-                     <div class="modal-header">
-                         <h5 class="modal-title" id="form_title">{{ __('Add new date') }}</h5>
-                         <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
-                             aria-label="Close">
-                             <i class="ki-outline ki-cross fs-1"></i>
-                         </div>
-                     </div>
 
-                     <div class="modal-body">
+         <div class="row">
+             @foreach (['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
+                 @php
+                     $daySchedule = $schedules[$day] ?? ['is_available' => false, 'times' => []];
+                 @endphp
 
-
-                         <div class="mb-3">
-                             <label for="day_date_inp" class="form-label">{{ __('Date') }}</label>
-                             <input type="date" name="day_date" id="day_date_inp"
-                                 class="form-control form-control-lg form-control-solid">
-                             <div class="invalid-feedback d-block" id="day_date"></div>
+                 <div class="col-md-6 mb-4">
+                     <div class="card shadow-sm">
+                         <div class="card-header">
+                             <h5 class="card-title mb-0">{{ __($day) }}</h5>
                          </div>
 
+                         <div class="card-body">
+                             {{-- Availability Checkbox with hidden fallback --}}
+                             <input type="hidden" name="schedules[{{ $day }}][is_available]" value="0" />
+                             <div class="form-check mb-3">
+                                 <input class="form-check-input" type="checkbox"
+                                     name="schedules[{{ $day }}][is_available]" value="1"
+                                     id="{{ $day }}Check" {{ $daySchedule['is_available'] ? 'checked' : '' }}>
+                                 <label class="form-check-label" for="{{ $day }}Check">
+                                     {{ __('Available') }}
+                                 </label>
+                             </div>
 
-
-                         <div class="mb-3">
-                             <label class="form-label ">{{ __('Time Slots') }}</label>
-
-                             <div id="form_repeater">
-                                 <div data-repeater-list="time_slots">
-                                     <div data-repeater-item class="d-flex mb-2 align-items-center">
-                                         <input type="time" name="time" class="form-control me-2" />
-
+                             {{-- Time Slots Repeater --}}
+                             <div data-repeater-list="schedules[{{ $day }}][times]">
+                                 @forelse ($daySchedule['times'] as $timeItem)
+                                     <div data-repeater-item class="d-flex mb-3 align-items-center">
+                                         <input type="time" name="time" class="form-control me-2"
+                                             value="{{ $timeItem['time'] ?? '' }}"  />
                                          <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
                                              {{ __('Remove') }}
                                          </button>
                                      </div>
-
-                                 </div>
-
-                                 <button type="button" data-repeater-create class="btn btn-sm btn-light-primary mt-2">
-                                     {{ __('Add Time Slot') }}
-                                 </button>
+                                 @empty
+                                     <div data-repeater-item class="d-flex mb-3 align-items-center">
+                                         <input type="time" name="time" class="form-control me-2"  />
+                                         <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
+                                             {{ __('Remove') }}
+                                         </button>
+                                     </div>
+                                 @endforelse
                              </div>
 
+                             <button type="button" data-repeater-create class="btn btn-sm btn-light-primary mt-2">
+                                 + {{ __('Add Time Slot') }}
+                             </button>
                          </div>
-
-                     </div>
-
-                     <div class="modal-footer">
-                         <button type="button" class="btn btn-light"
-                             data-bs-dismiss="modal">{{ __('Close') }}</button>
-                         <button type="submit" class="btn btn-primary">
-                             <span class="indicator-label">{{ __('Save') }}</span>
-                             <span class="indicator-progress">{{ __('Please wait...') }}
-                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                             </span>
-                         </button>
                      </div>
                  </div>
-             </div>
+             @endforeach
+         </div>
+
+         <div class="mt-4">
+             <button type="submit" class="btn btn-primary">
+                 <span class="indicator-label">{{ __('Save Schedule') }}</span>
+                 <span class="indicator-progress" style="display:none;">
+                     {{ __('Please wait...') }}
+                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                 </span>
+             </button>
          </div>
      </form>
  @endsection
@@ -198,5 +200,53 @@
 
          });
      </script>
-     <script></script>
+
+     <script>
+         $(document).ready(function() {
+             $(document).ready(function() {
+                 $('[data-repeater-list]').each(function() {
+                     $(this).closest('.card-body').repeater({
+                         initEmpty: false,
+                         defaultValues: {
+                             'time': ''
+                         },
+                         show: function() {
+                             $(this).slideDown();
+                         },
+                         hide: function(deleteElement) {
+                             $(this).slideUp(deleteElement);
+                         }
+                     });
+                 });
+             });
+
+             $('#add_btn').click(function() {
+                 $('#form_title').text('{{ __('Add new date') }}');
+                 $("[name='_method']").remove();
+                 $('#crud_form').trigger('reset');
+                 $('#crud_form').attr('action', '{{ route('dashboard.booking_dates.store') }}');
+             });
+         });
+     </script>
+
+     <script>
+         $(document).ready(function() {
+             $('[data-repeater-list]').each(function() {
+                 $(this).repeater({
+                     initEmpty: false,
+                     defaultValues: {
+                         'time': ''
+                     },
+                     show: function() {
+                         $(this).slideDown();
+                     },
+                     hide: function(deleteElement) {
+
+                         $(this).slideUp(deleteElement);
+
+                     }
+                 });
+             });
+         });
+     </script>
  @endpush
