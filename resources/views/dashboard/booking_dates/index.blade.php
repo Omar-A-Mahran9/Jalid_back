@@ -24,78 +24,83 @@
      </div>
      <!--end::Basic info-->
 
+     <div class="card shadow-sm">
+         <div class="card-body">
+             <form id="crud_form" class="ajax-form" action="{{ route('dashboard.booking_dates.store') }}" method="post"
+                 data-success-callback="onAjaxSuccess" data-error-callback="onAjaxError">
+                 @csrf
 
-     <form id="crud_form" class="ajax-form" action="{{ route('dashboard.booking_dates.store') }}" method="post"
-         data-success-callback="onAjaxSuccess" data-error-callback="onAjaxError">
-         @csrf
+                 <div class="row justify-content-center align-items-start">
+                     @foreach (['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
+                         @php
+                             $daySchedule = $schedules[$day] ?? ['is_available' => false, 'times' => []];
+                         @endphp
 
-         <div class="row justify-content-center align-items-start">
-             @foreach (['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
-                 @php
-                     $daySchedule = $schedules[$day] ?? ['is_available' => false, 'times' => []];
-                 @endphp
+                         <div class="col-md-6 mb-4">
+                             <div class="card shadow-sm">
+                                 <div class="card-header">
+                                     <h5 class="card-title mb-0">{{ __($day) }}</h5>
+                                 </div>
 
-                 <div class="col-md-6 mb-4">
-                     <div class="card shadow-sm">
-                         <div class="card-header">
-                             <h5 class="card-title mb-0">{{ __($day) }}</h5>
-                         </div>
+                                 <div class="card-body">
+                                     {{-- Availability Checkbox with hidden fallback --}}
+                                     <input type="hidden" name="schedules[{{ $day }}][is_available]"
+                                         value="0" />
+                                     <div class="form-check mb-3">
 
-                         <div class="card-body">
-                             {{-- Availability Checkbox with hidden fallback --}}
-                             <input type="hidden" name="schedules[{{ $day }}][is_available]" value="0" />
-                             <div class="form-check mb-3">
+                                         <input class="form-check-input" type="checkbox"
+                                             name="schedules[{{ $day }}][is_available]" value="1"
+                                             id="{{ $day }}Check"
+                                             {{ $daySchedule['is_available'] ? 'checked' : '' }}>
 
-                                 <input class="form-check-input" type="checkbox"
-                                     name="schedules[{{ $day }}][is_available]" value="1"
-                                     id="{{ $day }}Check" {{ $daySchedule['is_available'] ? 'checked' : '' }}>
+                                         <label class="form-check-label" for="{{ $day }}Check">
+                                             {{ __('Available') }}
+                                         </label>
 
-                                 <label class="form-check-label" for="{{ $day }}Check">
-                                     {{ __('Available') }}
-                                 </label>
-
-                             </div>
-
-                             {{-- Time Slots Repeater --}}
-                             <div data-repeater-list="schedules[{{ $day }}][times]">
-                                 @forelse ($daySchedule['times'] as $timeItem)
-                                     <div data-repeater-item class="d-flex mb-3 align-items-center">
-                                         <input type="time" name="time" class="form-control me-2"
-                                             value="{{ $timeItem['time'] ?? '' }}" />
-                                         <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
-                                             {{ __('Remove') }}
-                                         </button>
                                      </div>
-                                 @empty
-                                     <div data-repeater-item class="d-flex mb-3 align-items-center">
-                                         <input type="time" name="time" class="form-control me-2" />
-                                         <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
-                                             {{ __('Remove') }}
-                                         </button>
+
+                                     {{-- Time Slots Repeater --}}
+                                     <div data-repeater-list="schedules[{{ $day }}][times]">
+                                         @forelse ($daySchedule['times'] as $timeItem)
+                                             <div data-repeater-item class="d-flex mb-3 align-items-center">
+                                                 <input type="time" name="time" class="form-control me-2"
+                                                     value="{{ $timeItem['time'] ?? '' }}" />
+                                                 <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
+                                                     {{ __('Remove') }}
+                                                 </button>
+                                             </div>
+                                         @empty
+                                             <div data-repeater-item class="d-flex mb-3 align-items-center">
+                                                 <input type="time" name="time" class="form-control me-2" />
+                                                 <button type="button" data-repeater-delete class="btn btn-sm btn-danger">
+                                                     {{ __('Remove') }}
+                                                 </button>
+                                             </div>
+                                         @endforelse
                                      </div>
-                                 @endforelse
+
+
+                                     <button type="button" data-repeater-create class="btn btn-sm btn-light-primary mt-2">
+                                         + {{ __('Add Time Slot') }}
+                                     </button>
+                                 </div>
                              </div>
-
-
-                             <button type="button" data-repeater-create class="btn btn-sm btn-light-primary mt-2">
-                                 + {{ __('Add Time Slot') }}
-                             </button>
                          </div>
-                     </div>
+                     @endforeach
                  </div>
-             @endforeach
-         </div>
 
-         <div class="mt-4 text-center">
-             <button type="submit" class="btn btn-primary">
-                 <span class="indicator-label">{{ __('Save') }}</span>
-                 <span class="indicator-progress" style="display:none;">
-                     {{ __('Please wait...') }}
-                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                 </span>
-             </button>
+                 <div class="card-footer text-center">
+                     <button type="submit" class="btn btn-primary">
+                         <span class="indicator-label">{{ __('Save') }}</span>
+                         <span class="indicator-progress" style="display:none;">
+                             {{ __('Please wait...') }}
+                             <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                         </span>
+                     </button>
+                 </div>
+             </form>
          </div>
-     </form>
+     </div>
  @endsection
  @push('scripts')
      <!-- Add jQuery Repeater manually -->
