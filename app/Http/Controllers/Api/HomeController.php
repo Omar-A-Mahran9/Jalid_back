@@ -89,7 +89,7 @@ public function getTime(Request $request)
             'time_slots' => [],
         ]);
     }
-
+dd($bookingDate);
     $timeSlots = $bookingDate->timeSlots->mapWithKeys(function ($slot) {
         $time = $slot->time;
         $formatted = Carbon::createFromFormat('H:i:s', $time)->format('h:i A');
