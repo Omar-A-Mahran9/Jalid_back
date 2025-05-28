@@ -74,7 +74,6 @@ public function getServices()
     ]);
 }
 
-
 public function getTime(Request $request)
 {
     $request->validate([
@@ -82,25 +81,20 @@ public function getTime(Request $request)
     ]);
 
     $bookingDate = BookingDate::with('timeSlots')
-        ->where('day_date', $request->day_date)
-        ->first();
+        ->where('day_date', $request->day_date)->first();
 
-    if (!$bookingDate || !$bookingDate->is_available) {
-        return $this->success('', [
-            'time_slots' => [],
-        ]);
+    if (!$bookingDate) {
+        return $this->success('',[]);
     }
 
-    $timeSlots = $bookingDate->timeSlots->pluck('time')->mapWithKeys(function ($time) {
-        $key = Carbon::createFromFormat('H:i:s', $time)->format('H:i'); // key = "14:30"
-        $value = Carbon::createFromFormat('H:i:s', $time)->format('h:i A'); // value = "02:30 PM"
-        return [$key => $value];
-    });
-
-    return $this->success('', [
-        'time_slots' => $timeSlots,
+    return $this->success('',[
+        'time_slots' => $bookingDate->timeSlots->pluck('time')->map(function ($time) {
+            return Carbon::parse($time)->format('h:i A');
+        }),
     ]);
+
 }
+
 public function getAvailableDates()
 {
     $dates = BookingDate::withCount('timeSlots')
