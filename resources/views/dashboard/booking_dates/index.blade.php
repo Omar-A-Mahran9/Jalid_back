@@ -86,7 +86,7 @@
              @endforeach
          </div>
 
-         <div class="mt-4">
+         <div class="mt-4 text-center">
              <button type="submit" class="btn btn-primary">
                  <span class="indicator-label">{{ __('Save') }}</span>
                  <span class="indicator-progress" style="display:none;">
