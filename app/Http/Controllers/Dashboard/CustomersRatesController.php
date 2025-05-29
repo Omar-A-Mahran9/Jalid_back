@@ -61,9 +61,10 @@ class CustomersRatesController extends Controller
     }
 
 
-    public function update(Request $request, CustomerRate $customerRate)
+    public function update(Request $request,$id)
     {
         $this->authorize('update_customersRate');
+$customerRate=CustomerRate::find($id);
 
         $data = $request->validate([
             'full_name' => 'required|string|max:255',
